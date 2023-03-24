@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import User from "../models/user";
 
 export const getUsers = async (req: Request, res: Response)=>{
-    const users = await User.findAll();    
+    const users = await User.findAll();  
     res.json({ users })
 }
 
@@ -33,10 +33,9 @@ export const postUser = async (req: Request, res: Response)=>{
                 msg: 'There is already a user with the email ' + body.email
             })
         }
-        
-        const user = new User(body);
-        await user.save();
-
+        //new User(body);        
+        const user = await User.create(body);
+        //await user.save();
         res.json( user );
     }
     catch(error){

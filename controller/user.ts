@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import User from "../models/user";
 
-export const getUsers = async (req: Request, res: Response)=>{
+export const getUsers = async (req: Request, res: Response) => {
     const users = await User.findAll();  
     res.json({ users })
 }
 
-export const getUser = async (req: Request, res: Response)=>{
+export const getUser = async (req: Request, res: Response) => {
     const { id } = req.params;
     const user = await User.findByPk(id);    
     user
@@ -17,7 +17,7 @@ export const getUser = async (req: Request, res: Response)=>{
 
 }
 
-export const postUser = async (req: Request, res: Response)=>{
+export const postUser = async (req: Request, res: Response) => {
     const { body } = req;
 
     try {
@@ -46,7 +46,7 @@ export const postUser = async (req: Request, res: Response)=>{
     }
 }
 
-export const putUser = async (req: Request, res: Response)=>{
+export const putUser = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { body } = req;
 
@@ -70,10 +70,14 @@ export const putUser = async (req: Request, res: Response)=>{
     }
 }
 
-export const deleteUser = (req: Request, res: Response)=>{
+export const deleteUser = async (req: Request, res: Response) => {
     const { id } = req.params;
-    res.json({
-        msg: 'deleteUser',
-        id
-    })
+    const user = await User.findByPk(id);    
+    (!user)
+        ? res.status(404).json({
+            msg: `There is no user with the id ${id}`
+        })
+        : await user.update({state: false});
+        // : await user.destroy();
+    res.json({user});
 }
